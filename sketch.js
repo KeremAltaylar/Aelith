@@ -9,15 +9,18 @@ var particles2 = [];
 var particles3 = [];
 var flowfield;
 var magv;
-var cr = fxrandRange(15, 170, 1);
+var cr = fxrandRange(60, 200, 1);
 var cg = fxrandRange(10, 180, 1);
 var cb = fxrandRange(30, 200, 1);
-var dr = fxrandRange(24, 250, 1);
+var dr = fxrandRange(24, 220, 1);
 var dg = fxrandRange(15, 200, 1);
 var db = fxrandRange(12, 180, 1);
 var indexk = 0;
-var sw1 = fxrandRange(0.1, 0.4, 0.1);
+var sw1 = fxrandRange(0.5, 1.5, 0.1);
 var sw2 = fxrandRange(0.1, 0.2, 0.1);
+var sclBase = scl;
+var sw1Base = sw1;
+var sw2Base = sw2;
 var mes1a = fxrandRange(0.1, 80, 0.1);
 var mes2a = fxrandRange(1, 8, 1);
 var mes1b = fxrandRange(2, 40, 0.1);
@@ -29,7 +32,18 @@ function setup() {
   initParticles();
 }
 
+function computeScale() {
+  var w = windowWidth;
+  if (w <= 400) return 1.25;
+  if (w <= 768) return 1.15;
+  return 1.0;
+}
+
 function initParticles() {
+  var scale = computeScale();
+  scl = sclBase * scale;
+  sw1 = sw1Base * scale;
+  sw2 = sw2Base * scale;
   cols = floor(windowWidth / scl);
   rows = floor(windowHeight / scl);
   flowfield = new Array(cols * rows);
@@ -39,8 +53,9 @@ function initParticles() {
   particles3 = [];
 
   for (var i = 0; i < 500; i++) {
+    var r_var = cr + fxrandRange(-15, 15, 1);
     particles[i] = new Particle(
-      cr,
+      r_var,
       0,
       0,
       (fxrand() * i) / 2 + windowWidth / mes1a,
@@ -51,9 +66,11 @@ function initParticles() {
     );
   }
   for (var i = 0; i < 500; i++) {
+    var r_var = 80 + fxrandRange(-15, 15, 1);
+    var g_var = 70 + fxrandRange(-15, 15, 1);
     particles3[i] = new Particle(
-      80,
-      70,
+      r_var,
+      g_var,
       0,
       (fxrand() * i) / 2 + windowWidth / 4,
       fxrand() * i * 2 + windowHeight / 2,
@@ -63,10 +80,12 @@ function initParticles() {
   }
 
   for (var i = 0; i < 300; i++) {
+    var g_var = 100 + fxrandRange(-15, 15, 1);
+    var b_var = 20 + fxrandRange(-15, 15, 1);
     particles2[i] = new Particle2(
       0,
-      100,
-      20,
+      g_var,
+      b_var,
       fxrand() * i + windowWidth / mes2a,
       fxrand() * i + windowHeight / mes2b,
       sw2,
@@ -86,10 +105,10 @@ function draw() {
     var xoff = 0;
     for (var x = 0; x < cols; x++) {
       var index = x + y * cols;
-      flowfield[index] = v;
       var angle = zoff * xoff * yoff * 100;
       var v = p5.Vector.fromAngle(angle);
       v.setMag(magv);
+      flowfield[index] = v;
       xoff += inc;
 
       //rect(scl * x, scl * y, scl, scl);
@@ -148,7 +167,7 @@ function mousePressed() {
 }
 
 function fxrandRange(min, max, step) {
-  value = Math.round((fxrand() * (max - min)) / step);
+  var value = Math.round((fxrand() * (max - min)) / step);
   return value * step + min;
 }
 
