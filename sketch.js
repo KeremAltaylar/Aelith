@@ -1,6 +1,9 @@
 var inc = fxrandRange(20, 30, 0.1);
 var scl = fxrandRange(25, 60, 1);
 var magv = fxrandRange(2, 3, 0.1);
+var incCurrent = inc;
+var magvCurrent = magv;
+var mes1aCurrent, mes1bCurrent, mes2aCurrent, mes2bCurrent;
 var cols, rows;
 var fr;
 var zoff = 10;
@@ -44,6 +47,14 @@ function initParticles() {
   scl = sclBase * scale;
   sw1 = sw1Base * scale;
   sw2 = sw2Base * scale;
+  incCurrent = inc + fxrandRange(-1, 1, 0.1);
+  magvCurrent = magv + fxrandRange(-0.5, 0.5, 0.1);
+  sw1 = sw1 + fxrandRange(-0.2, 0.2, 0.1);
+  sw2 = sw2 + fxrandRange(-0.1, 0.1, 0.05);
+  mes1aCurrent = Math.max(0.1, mes1a + fxrandRange(-5, 5, 0.5));
+  mes1bCurrent = Math.max(0.1, mes1b + fxrandRange(-3, 3, 0.5));
+  mes2aCurrent = Math.max(0.5, mes2a + fxrandRange(-2, 2, 0.5));
+  mes2bCurrent = Math.max(0.5, mes2b + fxrandRange(-0.5, 0.5, 0.1));
   cols = floor(windowWidth / scl);
   rows = floor(windowHeight / scl);
   flowfield = new Array(cols * rows);
@@ -58,8 +69,8 @@ function initParticles() {
       r_var,
       0,
       0,
-      (fxrand() * i) / 2 + windowWidth / mes1a,
-      fxrand() * i * 2 + windowHeight / mes1b,
+      (fxrand() * i) / 2 + windowWidth / mes1aCurrent,
+      fxrand() * i * 2 + windowHeight / mes1bCurrent,
       sw1,
       0.5,
       6
@@ -86,8 +97,8 @@ function initParticles() {
       0,
       g_var,
       b_var,
-      fxrand() * i + windowWidth / mes2a,
-      fxrand() * i + windowHeight / mes2b,
+      fxrand() * i + windowWidth / mes2aCurrent,
+      fxrand() * i + windowHeight / mes2bCurrent,
       sw2,
       5
     );
@@ -107,9 +118,9 @@ function draw() {
       var index = x + y * cols;
       var angle = zoff * xoff * yoff * 100;
       var v = p5.Vector.fromAngle(angle);
-      v.setMag(magv);
+      v.setMag(magvCurrent);
       flowfield[index] = v;
-      xoff += inc;
+      xoff += incCurrent;
 
       //rect(scl * x, scl * y, scl, scl);
     }
@@ -157,7 +168,10 @@ function draw() {
 }
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  initParticles();
+  cols = floor(windowWidth / scl);
+  rows = floor(windowHeight / scl);
+  flowfield = new Array(cols * rows);
+  indexk = 0;
   loop();
 }
 
