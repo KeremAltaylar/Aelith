@@ -25,12 +25,20 @@ var mes2b = fxrandRange(1, 1.5, 0.1);
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  fr = createP("");
+  initParticles();
+}
 
+function initParticles() {
   cols = floor(windowWidth / scl);
   rows = floor(windowHeight / scl);
-  fr = createP("");
   flowfield = new Array(cols * rows);
-  for (i = 0; i < 500; i++) {
+
+  particles = [];
+  particles2 = [];
+  particles3 = [];
+
+  for (var i = 0; i < 500; i++) {
     particles[i] = new Particle(
       cr,
       0,
@@ -42,7 +50,7 @@ function setup() {
       6
     );
   }
-  for (i = 0; i < 500; i++) {
+  for (var i = 0; i < 500; i++) {
     particles3[i] = new Particle(
       80,
       70,
@@ -54,7 +62,7 @@ function setup() {
     );
   }
 
-  for (i = 0; i < 300; i++) {
+  for (var i = 0; i < 300; i++) {
     particles2[i] = new Particle2(
       0,
       100,
@@ -65,8 +73,8 @@ function setup() {
       5
     );
   }
-  // background(235, 215, 141);
   background(0);
+  indexk = 0;
 }
 
 function draw() {
@@ -130,72 +138,13 @@ function draw() {
 }
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  indexk = 0;
-  cols = floor(windowWidth / scl);
-  rows = floor(windowHeight / scl);
-  //fr = createP("");
-  flowfield = new Array(cols * rows);
+  initParticles();
+  loop();
+}
 
-  for (i = 0; i < 500; i++) {
-    particles[i] = new Particle(
-      cr,
-      0,
-      0,
-      (fxrand() * i) / 2 + windowWidth / mes1a,
-      fxrand() * i * 2 + windowHeight / mes1b,
-      sw1,
-      0.5,
-      6
-    );
-  }
-  for (i = 0; i < 500; i++) {
-    particles3[i] = new Particle(
-      80,
-      70,
-      0,
-      (fxrand() * i) / 2 + windowWidth / 4,
-      fxrand() * i * 2 + windowHeight / 2,
-      0.3,
-      3
-    );
-  }
-
-  for (i = 0; i < 500; i++) {
-    particles2[i] = new Particle2(
-      0,
-      100,
-      20,
-      fxrand() * i + windowWidth / mes2a,
-      fxrand() * i + windowHeight / mes2b,
-      sw2,
-      6
-    );
-  }
-  // background(235, 215, 141);
-
-  push();
-  noStroke();
-  background(0);
-  rectMode(RADIUS);
-  fill(0);
-  //fill(alpha(50));
-  rect(
-    windowWidth / 2,
-    windowHeight / 2,
-    windowWidth / 2 - 30,
-    windowHeight / 2 - 30
-  );
-
-  rectMode(RADIUS);
-  fill(0, 1 * sin(millis() * 1));
-  noStroke();
-  rect(
-    windowWidth / 2,
-    windowHeight / 2,
-    windowWidth / 2 - 30,
-    windowHeight / 2 - 30
-  );
-  pop();
+function mousePressed() {
+  initParticles();
+  loop();
 }
 
 function fxrandRange(min, max, step) {
